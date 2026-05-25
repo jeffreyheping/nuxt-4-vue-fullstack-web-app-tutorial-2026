@@ -1,0 +1,1 @@
+# nuxt-4-vue-fullstack-web-app-tutorial-2026
