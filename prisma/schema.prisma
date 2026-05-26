@@ -1,0 +1,41 @@
+// prisma/schema.prisma
+// ============================================================
+// CURRENT: SQLite (zero-config, file-based)
+// To switch to PostgreSQL, see DATABASE_SWITCH.md
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String
+  tasks     Task[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Task {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      String     @default("TODO")
+  priority    String     @default("MEDIUM")
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  // SQLite note: SQLite does not support native enums,
+  // so TaskStatus and Priority are stored as String.
+  // Valid values for status: "TODO", "IN_PROGRESS", "DONE"
+  // Valid values for priority: "LOW", "MEDIUM", "HIGH"
+}
